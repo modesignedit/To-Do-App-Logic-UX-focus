@@ -4,7 +4,7 @@ import { Task } from '@/types/todo';
 import { TaskInput } from './TaskInput';
 import { TaskList } from './TaskList';
 import { ThemeToggle } from './ThemeToggle';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Trash2 } from 'lucide-react';
 
 /**
  * ============================================================
@@ -106,6 +106,14 @@ export function TodoApp() {
   };
 
   // ========================================
+  // ACTION: Clear all completed tasks
+  // ========================================
+  const clearCompleted = () => {
+    // Keep only tasks that are NOT completed
+    setTasks(tasks.filter(task => !task.completed));
+  };
+
+  // ========================================
   // COMPUTED: Statistics for display
   // ========================================
   const completedCount = tasks.filter(t => t.completed).length;
@@ -183,6 +191,21 @@ export function TodoApp() {
           onToggle={toggleTask} 
           onDelete={deleteTask} 
         />
+        
+        {/* ========================================
+            Clear Completed Button
+            ======================================== */}
+        {completedCount > 0 && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={clearCompleted}
+              className="group flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-destructive bg-muted/50 hover:bg-destructive/10 rounded-xl border border-border/50 hover:border-destructive/30 transition-all duration-200"
+            >
+              <Trash2 className="w-4 h-4 transition-transform group-hover:scale-110" />
+              Clear {completedCount} completed
+            </button>
+          </div>
+        )}
         
         {/* Footer tip */}
         {totalCount > 0 && (
