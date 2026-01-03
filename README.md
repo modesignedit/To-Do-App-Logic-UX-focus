@@ -2,70 +2,81 @@
 ## Project info
 
 
-## How can I edit this code?
+📝 To-Do App – Logic & UX Focus
 
-There are several ways of editing your application.
+A clean and minimal to-do list application focused on state management, user interactions, and UX design. Built to demonstrate real-world frontend logic using Lovable.dev.
 
-**Use Lovable**
+🚀 Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+➕ Add new tasks
 
-Changes made via Lovable will be committed automatically to this repo.
+✅ Mark tasks as completed
 
-**Use your preferred IDE**
+❌ Delete tasks
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+💾 Persist tasks in local storage (survives page refresh)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+🌗 Light and dark mode toggle
 
-Follow these steps:
+📱 Fully responsive design
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+🎨 Smooth hover effects and transitions
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+🧠 What I Learned
 
-# Step 3: Install the necessary dependencies.
-npm i
+Managing application state
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Updating the UI based on user actions
 
-**Edit a file directly in GitHub**
+Working with local storage for data persistence
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Creating a user-friendly, intuitive interface
 
-**Use GitHub Codespaces**
+Implementing UX best practices for task management
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🛠️ Built With
 
-## What technologies are used for this project?
+Lovable.dev
 
-This project is built with:
+JavaScript
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+HTML & CSS
 
-## How can I deploy this project?
+📸 Screenshots
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Add screenshots or GIFs of the app here to show interactivity
 
-## Can I connect a custom domain to my Lovable project?
+🔗 Live Demo
 
-Yes, you can!
+👉 Add your deployed app link here
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+📂 How It Works
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Users add a task with a title.
+
+Tasks are stored in local storage for persistence.
+
+Users can mark tasks as completed, triggering visual changes.
+
+Users can delete tasks, with state updating automatically.
+
+Toggle between light and dark mode for better UX.
+
+🌱 Future Improvements
+
+Task categories or tags
+
+Task deadlines with reminders
+
+Drag-and-drop task ordering
+
+Sync tasks with backend/database
+
+👨‍💻 Author
+
+Moses Orji
+Vibe Coder | Building modern web apps with AI-assisted tools
+
+LinkedIn: https://ng.linkedin.com/in/moses-orji-5553a8a9
+
+GitHub: https://github.com/modesignedit
