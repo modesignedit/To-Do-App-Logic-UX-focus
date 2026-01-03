@@ -7,70 +7,157 @@ import { ThemeToggle } from './ThemeToggle';
 import { CheckCircle2 } from 'lucide-react';
 
 /**
- * Main Todo Application Component
- * Manages all task state and orchestrates child components
+ * ============================================================
+ * TodoApp - Main Application Component
+ * ============================================================
+ * 
+ * STATE MANAGEMENT OVERVIEW:
+ * 
+ * 1. tasks (useLocalStorage)
+ *    - Array of all task objects
+ *    - Automatically saved to localStorage
+ *    - Persists across page refreshes
+ * 
+ * 2. isDark (useTheme)
+ *    - Boolean for current theme
+ *    - Saved to localStorage
+ *    - Applies 'dark' class to <html>
+ * 
+ * 
+ * DATA FLOW DIAGRAM:
+ * 
+ *        ┌─────────────────────────────────────────┐
+ *        │             TodoApp (Parent)             │
+ *        │                                         │
+ *        │  State: tasks = [{...}, {...}, ...]     │
+ *        │                                         │
+ *        │  Functions:                             │
+ *        │  - addTask(text)                        │
+ *        │  - toggleTask(id)                       │
+ *        │  - deleteTask(id)                       │
+ *        └───────────┬───────────────┬─────────────┘
+ *                    │               │
+ *         Props: onAddTask    Props: tasks, onToggle, onDelete
+ *                    │               │
+ *                    ▼               ▼
+ *        ┌───────────────┐   ┌───────────────────┐
+ *        │   TaskInput   │   │     TaskList      │
+ *        │               │   │         │         │
+ *        │ Calls addTask │   │    ┌────┴────┐    │
+ *        │ when submitted│   │    ▼         ▼    │
+ *        └───────────────┘   │ TaskItem TaskItem │
+ *                            └───────────────────┘
  */
 export function TodoApp() {
-  // Persist tasks to localStorage
+  // ========================================
+  // STATE: Tasks array with localStorage persistence
+  // ========================================
+  // useLocalStorage works like useState, but saves to browser storage
+  // 'todo-tasks' is the key in localStorage
+  // [] is the default value for new users
   const [tasks, setTasks] = useLocalStorage<Task[]>('todo-tasks', []);
-  // Theme management
+  
+  // ========================================
+  // STATE: Theme (light/dark mode)
+  // ========================================
   const { isDark, toggleTheme } = useTheme();
 
-  /**
-   * Add a new task to the list
-   * Generates unique ID using timestamp + random string
-   */
+  // ========================================
+  // ACTION: Add a new task
+  // ========================================
   const addTask = (text: string) => {
+    // Create new task object with unique ID
     const newTask: Task = {
+      // Generate unique ID using timestamp + random string
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       text,
       completed: false,
       createdAt: Date.now(),
     };
-    // Add new task at the beginning of the list
+    
+    // Add new task at the BEGINNING of the array
+    // Spread operator: [...oldArray] creates a copy
+    // [newTask, ...tasks] puts newTask first
     setTasks([newTask, ...tasks]);
   };
 
-  /**
-   * Toggle task completion status
-   */
+  // ========================================
+  // ACTION: Toggle task completion
+  // ========================================
   const toggleTask = (id: string) => {
+    // map() creates a new array with modified items
     setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
+      // If this is the task we want to toggle
+      task.id === id 
+        // Create new object with flipped 'completed' value
+        ? { ...task, completed: !task.completed } 
+        // Otherwise, keep the task unchanged
+        : task
     ));
   };
 
-  /**
-   * Remove a task from the list
-   */
+  // ========================================
+  // ACTION: Delete a task
+  // ========================================
   const deleteTask = (id: string) => {
+    // filter() creates new array with only items that pass the test
+    // Keep all tasks where id does NOT match the deleted id
     setTasks(tasks.filter(task => task.id !== id));
   };
 
-  // Calculate stats for header
+  // ========================================
+  // COMPUTED: Statistics for display
+  // ========================================
   const completedCount = tasks.filter(t => t.completed).length;
   const totalCount = tasks.length;
+  const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
+  // ========================================
+  // RENDER: UI Layout
+  // ========================================
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
-      {/* Main container with max width and padding */}
-      <div className="max-w-xl mx-auto px-4 py-8 sm:py-12">
-        {/* Header section */}
-        <header className="flex items-center justify-between mb-8">
-          {/* Logo and title */}
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <CheckCircle2 className="w-6 h-6 text-primary" />
+    <div className="min-h-screen bg-background transition-colors duration-500">
+      {/* Subtle background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/[0.02] via-transparent to-accent/[0.02] pointer-events-none" />
+      
+      {/* Main content container */}
+      <div className="relative max-w-lg mx-auto px-4 py-8 sm:py-16">
+        
+        {/* ========================================
+            Header Section
+            ======================================== */}
+        <header className="flex items-start justify-between mb-10">
+          <div className="flex items-center gap-4">
+            {/* Logo/Icon */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl" />
+              <div className="relative p-3 rounded-2xl bg-primary/10 border border-primary/20">
+                <CheckCircle2 className="w-7 h-7 text-primary" strokeWidth={2} />
+              </div>
             </div>
+            
+            {/* Title and stats */}
             <div>
-              <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
                 Tasks
               </h1>
-              {/* Task count display */}
+              
+              {/* Progress indicator - only show when tasks exist */}
               {totalCount > 0 && (
-                <p className="text-sm text-muted-foreground">
-                  {completedCount} of {totalCount} completed
-                </p>
+                <div className="flex items-center gap-3 mt-1.5">
+                  {/* Text stats */}
+                  <p className="text-sm text-muted-foreground">
+                    {completedCount} of {totalCount} done
+                  </p>
+                  
+                  {/* Progress bar */}
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -79,17 +166,30 @@ export function TodoApp() {
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
         </header>
 
-        {/* Task input form */}
-        <div className="mb-6">
+        {/* ========================================
+            Task Input Section
+            ======================================== */}
+        <div className="mb-8">
+          {/* Pass addTask function as prop - called when user submits */}
           <TaskInput onAddTask={addTask} />
         </div>
 
-        {/* Task list */}
+        {/* ========================================
+            Task List Section
+            ======================================== */}
+        {/* Pass tasks array and action handlers as props */}
         <TaskList 
           tasks={tasks} 
           onToggle={toggleTask} 
           onDelete={deleteTask} 
         />
+        
+        {/* Footer tip */}
+        {totalCount > 0 && (
+          <p className="text-center text-xs text-muted-foreground/50 mt-10">
+            Your tasks are saved locally in your browser
+          </p>
+        )}
       </div>
     </div>
   );
